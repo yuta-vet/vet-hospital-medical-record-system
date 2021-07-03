@@ -1,0 +1,23 @@
+{
+  "name": "vet-medical-records",
+  "version": "1.0.0",
+  "description": "Medical record system for veterinary hospital",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "vet",
+    "hospital",
+    "record"
+  ],
+  "author": "Yuta Hosoi",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^13.1.4"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  }
+}

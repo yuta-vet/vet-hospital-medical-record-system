@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+  <!-----------------------------------------------------------------------------
+  * 動物病院　カルテシステム　Lucky 
+  * v1.0.0 - built 2021-01-30
+  * Licensed under the MIT License.
+  * Copyright (c) 2021 Yuta Hosoi https://meknowledge.jpn.org/
+  * See LICENSE.md and README.md
+ * -------------------------------------------------------------------------->
+ 
+<head>
+  <meta charset="UTF-8">
+  <!--unsafe-inlineはdatalistを使うため。githubは郵便番号検索のため-->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline' ; script-src-elem 'self' https://*.github.io/ ">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/vegas.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <title>カルテシステム</title>
+</head>
+
+<body>
+
+  <!-- 下へのスクロールボタン -->
+  <a href="#syuso" class="fixed-top"><span></span></a>　
+  
+  <!-- ヘッダー -->
+  <div class="jumbotron">　
+    <div class="container centering">
+      <h1>動物病院　カルテシステム</h1>
+    </div>
+  </div>
+
+
+  <!-- データベース接続ボタン -->
+  <div class="container">　
+    <div class="row">
+      <div class="col text-center" id="database_div">
+        <button type="button" class="btn btn-info" id="database">データベース接続</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 記入する場所＋保存ボタン -->
+  <div class="container">　
+    
+    <!-- ボーダーライン -->
+    <div class="row border-top border-secondary border-3">
+    </div>
+
+    　<!-- リセットボタン -->
+      <div class="row">
+        <div class="col text-center">
+          <button type="button" class="btn btn-warning" id="reset">リセット</button>
+        </div>
+      </div>
+    
+    <!-- 入力エリア-->
+    <div class="row">
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="kanjyabango">患者番号</label>
+            <input type="text" class="form-control" id="kanjyabango" placeholder="">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="tanto">担当者</label>
+            <input type="text" class="form-control" id="tanto" placeholder="">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form>
+          <div class="form-group">
+            <label for="kainushiname">飼主名前</label>
+            <input type="text" class="form-control" id="kainushiname" placeholder="">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="denwa">電話番号</label>
+            <input type="tel" class="form-control" id="denwa" placeholder="">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="inputAddress01">郵便番号(7桁)</label>
+            <input type="text" name="zip01" maxlength="8" class="form-control" id="inputAddress01"
+              placeholder="1030013">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-12">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="inputAddress02">住所</label>
+            <input type="text" name="addr11" class="form-control" id="inputAddress02" placeholder="">
+          </div>
+        </form>
+      </div>
+    </div>
+
+  <div class="container">　
+
+    <!-- ボーダーライン -->
+    <div class="row border-top border-secondary border-3">
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="name">動物名前</label>
+            <input type="text" class="form-control" id="name" placeholder="">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <label for="animalList" class="form-label">動物種</label>
+        <input class="form-control" list="animalOptions" id="animalList" placeholder="">
+        <datalist id="animalOptions">
+          <option value="犬">
+          <option value="猫">
+          <option value="ウサギ">
+          <option value="フェレット">
+        </datalist>
+      </div>
+
+      <div class="col-sm-4">
+        <label for="sexList" class="form-label">性別</label>
+        <input class="form-control" list="sexOptions" id="sexList" placeholder="">
+        <datalist id="sexOptions">
+          <option value="オス">
+          <option value="メス">
+          <option value="避妊メス">
+          <option value="去勢オス">
+          <option value="不明">
+        </datalist>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="birthDay">生年月日</label>
+            <input type="date" class="form-control" id="birthDay">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="age">年齢</label>
+            <input type="text" class="form-control" id="age">
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="shinryobi">診療日</label>
+            <input type="date" class="form-control" id="shinryobi" placeholder="">
+          </div>
+        </form>
+      </div>
+      
+      <div class="table-responsive-sm" id = "previous_view">  
+          <!-- 前回のファイルから読み込みした内容をjavascriptで挿入する場所 -->
+      </div>
+      
+      <div class="col-sm-12">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="syuso">主訴・症状</label>
+            <textarea class="form-control" id="syuso" rows="5"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-12">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="shindan">診断</label>
+            <textarea class="form-control" id="shindan" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-12">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="kensa">検査</label>
+            <textarea class="form-control" id="kensa" rows="4"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-12">
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label for="chiryohoushin">治療方針</label>
+            <textarea class="form-control" id="chiryohoushin" rows="4"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-12">
+        <div class="mb-3">
+          <label for="formFileMultiple" class="form-label">添付ファイル（画像等）</label>
+          <input class="form-control" type="file" id="formFileMultiple" multiple>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col text-center">
+        <button type="button" class="btn btn-primary" id="save">保存</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container">
+    <!-- 保存しましたと表示されるところ -->
+    <div class="row">
+      <p id="belowsave"></p>
+    </div>
+  </div>
+
+  <script src="js/jquery-3.6.0.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/ajaxzip3.js"></script>
+  <script src="js/vegas.min.js"></script>
+  <script src="renderer.js"></script>
+
+</body>
+
+</html>

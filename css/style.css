@@ -1,0 +1,142 @@
+@font-face {
+    font-family: "TrainOne";
+    src: url("../font/TrainOne-Regular.ttf");
+}
+
+* {
+    font-family: "Meiryo";
+}
+
+.first {
+    margin-top: 2rem;
+}
+
+.jumbotron {
+    /* background-image: url("../img/cat3.jpg"); */
+    height: 30vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.jumbotron h1 {
+    padding-top: 4rem;
+    color: white;
+    font-family: "TrainOne";
+    filter: drop-shadow(0px 0px 3px #ebe8cf);
+}
+
+body {
+    background-image: url("../img/pattern.svg"); 
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color:rgba(255,255,255,0.5);
+    background-blend-mode:lighten;
+}
+
+
+.form-group {
+    padding-top: 10px;
+}
+
+.form-label {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+#inputAddress01::placeholder {
+    color: rgb(226, 237, 238);
+}
+
+/* 旧Edge対応 */
+
+#inputAddress01::-ms-input-placeholder {
+    color: rgb(226, 237, 238);
+}
+
+/* IE対応 */
+
+#inputAddress01:-ms-input-placeholder {
+    color: rgb(226, 237, 238);
+}
+
+.border-top {
+    margin-top: 10px;
+}
+
+#belowsave {
+    padding-top: 10px
+}
+
+#database {
+    margin-top: 10px;
+    color: aliceblue;
+}
+
+#reset {
+    margin-top: 20px;
+    margin-bottom:20px;
+    color: aliceblue;
+}
+
+#previous_view {
+    padding-top: 10px
+}
+
+.previous_view_add {
+    margin-top: 10px
+}
+
+
+th {
+    text-align: center;
+    vertical-align: middle;
+    width: 50%;  
+}
+
+
+td {
+    text-align: left;
+}
+
+.centering {
+    text-align: center;
+}
+
+a {
+    all: initial;
+    padding-top: 30px;
+    padding-right: 10px;
+}
+
+a span {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    padding-right: 15px;
+    margin-right: 15px;
+    border-left: 3px solid rgb(149, 253, 239);
+    border-bottom: 3px solid rgb(149, 253, 239);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.container #svgfile1{
+    position:absolute;
+    z-index: -2147483647;
+}
+
+
+.container #svgfile2{
+    position:absolute;
+    z-index: -2147483646;
+    padding-top: 7rem;
+}
+
+.clickAdjust{
+    padding-top: 0%;
+    padding-bottom: 0%;
+}
