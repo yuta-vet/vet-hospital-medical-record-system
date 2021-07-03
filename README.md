@@ -29,10 +29,10 @@ npm start
 5. After entering the patient's information, click the Save button.
 
 # Disclaimer
-1.Before using this file, please agree to the disclaimer and start using it. By downloading this file, you are deemed to have agreed to the disclaimer. 
-2.The user of this file assumes all responsibility for his or her own actions, and any problems caused by this file shall be solved by the user himself or herself, and the producer shall be exempted from any responsibility. 
-3.The producer shall not be liable for any damage to the user or any damage to a third party caused by the user's use of the file. The producer assumes no obligation to compensate for damages caused by computer system damage, data corruption, inaccuracy of the obtained data, or any other cause caused by the use of this file.
-4.This program has not been approved by the Act on Quality, Efficacy and Safety of Drugs and Medical Devices. Therefore, it should not be used for medical treatment. Please use it for personal research or entertainment purposes.
+1. Before using this file, please agree to the disclaimer and start using it. By downloading this file, you are deemed to have agreed to the disclaimer. 
+2. The user of this file assumes all responsibility for his or her own actions, and any problems caused by this file shall be solved by the user himself or herself, and the producer shall be exempted from any responsibility. 
+3. The producer shall not be liable for any damage to the user or any damage to a third party caused by the user's use of the file. The producer assumes no obligation to compensate for damages caused by computer system damage, data corruption, inaccuracy of the obtained data, or any other cause caused by the use of this file.
+4. This program has not been approved by the Act on Quality, Efficacy and Safety of Drugs and Medical Devices. Therefore, it should not be used for medical treatment. Please use it for personal research or entertainment purposes.
 
 ## License
 
