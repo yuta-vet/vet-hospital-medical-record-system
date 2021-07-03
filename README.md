@@ -3,6 +3,12 @@
 This is an electronic medical record system for veterinary hospitals. It is intended for use in Japan.
 Use it for personal research purposes. Do not use it for clinical purposes.
 
+
+# Set up
+git clone https://github.com/yuta-vet/vet-hospital-medical-record-system
+npm install
+npm start
+
 # How to use
 1. Set up a folder to be the database.
 2. Enter the patient number, and when you move to another item, the system will automatically search for the same patient information in the database based on the patient number and automatically complete the search. 
@@ -20,8 +26,15 @@ This program has not been approved by the Act on Quality, Efficacy and Safety of
 
 MIT(LICENSE.md)
 
+# 動物病院　カルテシステム　Lucky
+
 動物病院の電子カルテです。日本国内での使用を想定しています。
 個人的な研究用途に使用してください。臨床目的では使用しないでください。
+
+# セットアップ
+git clone https://github.com/yuta-vet/vet-hospital-medical-record-system
+npm install
+npm start
 
 # 使い方
 １．データベースとなるフォルダを設定します。
