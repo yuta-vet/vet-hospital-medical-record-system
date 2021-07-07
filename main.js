@@ -11,6 +11,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 const { readdirSync, existsSync, readFileSync, readFile, writeFile, mkdirSync, appendFileSync, openSync, writeSync, writeFileSync, copyFileSync } = require('fs')
 const iconv = require('iconv-lite')
+// const{homedir} = require("os") // compiling for mac app
 
 function createWindow() {
   // Create the browser window.
@@ -28,7 +29,7 @@ function createWindow() {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -82,6 +83,35 @@ ipcMain.on("onload-action", (event, arg) => {
 
 });
 
+/* compiling for mac app
+config_place_for_mac = path.join(homedir(),"Library","Application Support","vet-medical-records","config.txt") //mac専用
+
+// ページが読み込まれたときのアクション
+// render側では、診療日の入力をしている
+// main process側では、config.txtファイル内からデータベースのパスを入手
+ipcMain.on("onload-action", (event, arg) => {
+
+  if (existsSync(config_place_for_mac)) { // config.txtファイルが存在する場合
+
+    let text = readFileSync(config_place_for_mac);
+    database = text.toString()
+    console.log(`the path that config.txt indicates : ${text}`)
+
+    if (text.length !== 0) {　// config.txtにパスが書かれている場合
+      console.log("path was found in config.txt")
+      event.reply("onload-action-reply", "load-success")
+    } else {　// config.txtにパスが書かれていない場合
+      console.log("path was not found in config.txt")
+    }
+
+  } else {　// config.txtファイルが存在しない場合
+    writeFileSync(config_place_for_mac, "")  //空のファイルを書き出す
+    console.log("Created config.txt")
+  }
+
+});
+*/
+
 // データベース接続ボタンを押されたときのアクション
 //　directoryを開くダイアログを開き、directoryを選択。
 //  そのパスをconfig.txtに書き込む。そして、そのパスをrendererに返事する。
@@ -106,6 +136,33 @@ ipcMain.on("database", (event, arg) => {
   }
 
 });
+
+/* compiling for mac app
+// データベース接続ボタンを押されたときのアクション
+//　directoryを開くダイアログを開き、directoryを選択。
+//  そのパスをconfig.txtに書き込む。そして、そのパスをrendererに返事する。
+ipcMain.on("database", (event, arg) => {
+
+  let database_list = dialog.showOpenDialogSync({
+    properties: ['openDirectory']
+  });
+
+  if (typeof database_list !== 'undefined') { //cansel押したときは実行しない
+
+    database = database_list[0]
+
+    writeFile(config_place_for_mac, database, function (err) {
+      if (err) {
+        throw err;
+      }
+    });
+
+    event.reply("database-reply", database)
+
+  }
+
+});
+*/
 
 
 // web作成データを取り込みボタンを押したときのアクション
@@ -133,9 +190,11 @@ ipcMain.on("import", (event, arg) => {
       properties: ['openFile', 'multiSelections']
     });
 
-    imported_file = imported_file[0]
+    
 
-    if (imported_file !== 'undefined') {
+    if (typeof imported_file !== 'undefined') {
+
+      imported_file = imported_file[0]
 
       //  上記のcsvを読み込む
       let data_imported = readFileSync(imported_file)
