@@ -1,12 +1,12 @@
 {
   "name": "vet-medical-records",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Medical record system for veterinary hospital",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/yuta-vet/vet-hospital-medical-record-system",
   "keywords": [
     "vet",
     "hospital",
