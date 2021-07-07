@@ -2,6 +2,7 @@
 
 This is an electronic medical record system for veterinary hospitals. It is intended for use in Japan.
 Use it for personal research purposes. Do not use it for clinical purposes.
+Also check the [web version](https://kindpark.jpn.org/record-system/)! 
 
 Features
 - A node.js application powered by electron.
@@ -11,7 +12,8 @@ Features
 - Beautiful interface and easy to view previous records.
 - By using CSV as the database, past records can be viewed with common software.
 - Attachments can be uploaded by simply dragging and dropping.
-
+- Collaboration with Web version https://kindpark.jpn.org/record-system/
+- Web version can input text using speech to text technology 
 
 # Set up
 
@@ -27,6 +29,7 @@ npm start
 3. The zip code search is accessing an external database. Patient information is not sent. 
 4. Attachments can be dragged and dropped to attach multiple files.
 5. After entering the patient's information, click the Save button.
+6. The csv data created in the web version can be imported into the database by clicking the "Import web-created data" button.
 
 # Disclaimer
 1. Before using this file, please agree to the disclaimer and start using it. By downloading this file, you are deemed to have agreed to the disclaimer. 
@@ -44,6 +47,7 @@ MIT(LICENSE.md)
 
 動物病院の電子カルテです。日本国内での使用を想定しています。  
 個人的な研究用途に使用してください。臨床目的では使用しないでください。
+[ウェブバージョン](https://kindpark.jpn.org/record-system/)もチェックしてください!
 
 特徴
 - electronを使用したnode.jsアプリケーション。
@@ -53,6 +57,8 @@ MIT(LICENSE.md)
 - 前回の記録が見やすい、美しいインターフェイス。
 - データベースにCSVを利用することで、一般的なソフトでも過去の記録を見ることができる。
 - 添付ファイルはドラッグ・ドロップだけでアップロードできる。
+- ウェブバージョンとの連携ができる https://kindpark.jpn.org/record-system/
+- ウェブバージョンはカルテの音声入力ができる。 
 
 # セットアップ
 
@@ -67,7 +73,8 @@ npm start
 2. 患者番号を入力し、他の項目に移動すると患者番号から自動的にデータベース内から同一の患者情報を検索して自動補完します。  
 3. 郵便番号検索は、外部のデータベースにアクセスをしています。患者情報は送信されません。  
 4. 添付ファイルはドラッグドロップで複数個を添付できます。  
-5. 患者の情報を入力した後は保存ボタンを押してください。  
+5. 患者の情報を入力した後は保存ボタンを押してください。
+6. ウェブバージョンで作成したcsvデータは、web作成データ取込ボタンを押してデータベースに取り込んでください。
 
 # 免責事項
 1. 当ファイルをご利用する前に免責事項に同意し、同意後にご利用を開始してください。当ファイルをダウンロードすることによってご利用者は、免責事項に同意したものとみなします。  

@@ -108,6 +108,179 @@ ipcMain.on("database", (event, arg) => {
 });
 
 
+// web作成データを取り込みボタンを押したときのアクション
+// データベースが接続されていることが前提
+// importファイルから、患者番号を取り出し
+// 患者番号と合致するフォルダが存在するか確認
+// 条件：合致するフォルダが存在する
+//      条件：前回レコードの診察日と同じ→　データを取り込み最終行だけ修正
+//      条件：前回レコードの診察日と違う→　データに追記
+// 条件：合致するフォルダが存在しない→　フォルダ作成し、csv書き込み
+ipcMain.on("import", (event, arg) => {
+
+  if (database === "") {  // データベースと接続しているか。いないなら、エラーメッセージを表示して終了。
+    dialog.showMessageBox({
+      message: "データベースと接続してください",
+      type: "warning"
+    })
+
+  } else { // importファイルから、患者番号を取り出し
+
+    // importするファイルを選択するダイアログを表示する。取得したパスをimported_fileに代入する
+    let imported_file = dialog.showOpenDialogSync({
+      filters: [
+        { name: 'csv', extensions: ['csv'] }],
+      properties: ['openFile', 'multiSelections']
+    });
+
+    imported_file = imported_file[0]
+
+    if (imported_file !== 'undefined') {
+
+      //  上記のcsvを読み込む
+      let data_imported = readFileSync(imported_file)
+      let buf_imported = new Buffer.from(data_imported, 'binary');         //　バイナリバッファを一時的に作成する
+      let csv_content_imported = iconv.decode(buf_imported, "utf-8");  //　作成したバッファを使い、iconv-liteでShift-jisからutf8に変換。
+
+      // csvのデータを取り出す
+      let last_row_imported = csv_content_imported.split(`\r\n`)[1].split(",")
+      let kanjyabango_imported = last_row_imported[0]                    //　患者番号を入手
+
+      let target_folder_path = database　//　データベースのパスを変数に代入
+
+      //データベース内のフォルダのリストを入手。
+      const getDirectories = source =>
+        readdirSync(source, { withFileTypes: true })
+          .filter(dirent => dirent.isDirectory())
+          .map(dirent => dirent.name)
+
+      //フォルダ内のファイルリストを入手
+      const getFiles = source =>
+        readdirSync(source, { withFileTypes: true })
+          .map(dirent => dirent.name)
+
+      let folders = getDirectories(target_folder_path)
+      let target_folder_index = folders.indexOf(kanjyabango_imported) //フォルダのリストの中から、患者番号と合うフォルダのインデックスを入手
+
+      if (target_folder_index !== -1) { //  条件判断：以前のファイルが存在する場合には、importしたファイルの内容を既存のcsvに追加
+
+        let target_patient_folder = path.join(target_folder_path, folders[target_folder_index]) // フォルダ名を、フルパスに変換する
+        let file_list = getFiles(target_patient_folder)  // フォルダ内のファイル名のリストを入手
+        let file_list_full = file_list.map((item) => {   // ファイル名のリストをフルパスにする
+          return path.join(target_patient_folder, item)
+        });
+
+        // csvファイルのフルパスを入手する
+        const extention_list = file_list_full.map((item) => { return path.extname(item) })
+        const target_file_index = extention_list.indexOf(".csv")
+        const csv_filepath = file_list_full[target_file_index]
+
+        //  上記のcsvを読み込み、最終レコードの診療日が現在書き込もうとしている診療日と同じかどうか判断する
+        let data = readFileSync(csv_filepath)
+        let buf = new Buffer.from(data, 'binary');         //　バイナリバッファを一時的に作成する
+        let csv_content = iconv.decode(buf, "Shift_JIS");  //　作成したバッファを使い、iconv-liteでShift-jisからutf8に変換。
+        let last_row = csv_content.split(`\r\n`).slice(-2, -1)[0].split(",")
+        let ex_shinryobi = last_row[11]                 //　最終レコードの診療日を入手する
+
+        if (ex_shinryobi === last_row_imported[11]) { // 条件判断　最終レコードの診療日と、書き込もうとしている診療日が同日の場合
+
+          // 最終レコードを削除し、最終レコードに現在書き込み中の内容を付け加えて上書き保存する
+
+          // 最終レコードと、現在書き込み中の内容を組み合わせる
+          const last_row_modified = `\r\n${last_row[0]},${last_row[1]},${last_row[2]},${last_row[3]},${last_row[4]},${last_row[5]},${last_row[6]},${last_row[7]},${last_row[8]},${last_row[9]},${last_row[10]},${last_row[11]},${last_row[12]};${last_row_imported[12]},${last_row[13]};${last_row_imported[13]},${last_row[14]};${last_row_imported[14]},${last_row[15]};${last_row_imported[15]},${last_row[16]},${last_row_imported[17]}\r\n`
+          let buf2 = iconv.encode(last_row_modified, "utf-8") // 日本語をUTF8にエンコード
+
+          // 既存のレコードから、最終レコードを削除する
+          let csv_content_without_lastrow = csv_content.split(`\r\n`).slice(0, -2)　// csvをリストにして、csvの最終列を削除
+          csv_content_without_lastrow = csv_content_without_lastrow.join(`\r\n`)　// リストからcsvのフォーマットに戻す
+
+          // 既存のレコードから最終レコードを削除したものに、新しく作ったレコードを付け加える
+          let csv_content_concat = csv_content_without_lastrow + buf2
+
+          // csvを上書き保存する
+          writeFileSync(csv_filepath, "")                               //空のファイルを書き出す
+          let fd = openSync(csv_filepath, "w")                          //ファイルを書き込み専用モードで開く
+          let buf3 = iconv.encode(csv_content_concat, "Shift_JIS")         //書き出すデータをShift_JISに変換して、バッファとして書き出す
+          writeSync(fd, buf3, 0, buf3.length, (err, written, buffer) => {  //バッファをファイルに書き込む
+            if (err) {
+              throw err
+            }
+            else {
+              console.log("Add the data to the same day's record.")
+            }
+          })
+
+          dialog.showMessageBox({
+            message: "同日の患者データに追加されました",
+            type: "info"
+          })
+
+          event.reply('import-reply', "同日の患者データに追加されました") // rendererに返事。ボタンの下に保存しましたと記入する。
+
+        } else {　 // 条件判断　最終レコードの診療日と、書き込もうとしている診療日が同日ではない場合
+
+          // 既存のレコードに新規レコードを追加する
+
+          // importから受け取った内容をcsvに保存できるように調整
+          const csv_add = `${last_row_imported[0]},${last_row_imported[1]},${last_row_imported[2]},${last_row_imported[3]},${last_row_imported[4]},${last_row_imported[5]},${last_row_imported[6]},${last_row_imported[7]},${last_row_imported[8]},${last_row_imported[9]},${last_row_imported[10]},${last_row_imported[11]},${last_row_imported[12]},${last_row_imported[13]},${last_row_imported[14]},${last_row_imported[15]},${last_row_imported[16]},${last_row_imported[17]}\r\n`　//CSVの内容を指定。 ,は列の区切りを示し、\nは改行
+          let buf = iconv.encode(csv_add, "Shift_JIS") // 日本語バグの処理
+
+          // 以前のcsvファイルに追記する。fs.appendFileSync(ファイルのパス, 書き込む文字, 文字コード, コールバック関数)
+          appendFileSync(csv_filepath, buf, "utf-8", (err) => {
+            if (err) {
+              throw err;
+            } else {
+              console.log("Add to the existing file")
+            }
+          });
+
+          dialog.showMessageBox({
+            message: "患者データに追加されました",
+            type: "info"
+          })
+
+          event.reply('import-reply', "患者データに追加されました") // rendererに返事。ボタンの下に保存しましたと記入する。
+        }
+      } else {  // 条件判断：以前のファイルが存在しない場合には、患者のフォルダを作成し、importファイルから受け取った内容をcsvに新規作成
+
+        const new_folder_path = path.join(database, last_row_imported[0]) // importファイルlast_row_imported[0]は患者番号。新しく患者フォルダを作成する
+
+        mkdirSync(new_folder_path, (err) => {
+          if (err) { throw err; }
+          console.log("Directory is created.")
+        });
+
+        const new_csv_path = path.join(new_folder_path, `${last_row_imported[0]}.csv`) // 新しいcsvファイルのパスを作成。importファイルlast_row_imported[0]は患者番号
+
+        // importファイルの内容をcsvに保存できるように調整
+        let csv = `患者番号,担当者,飼主名前,電話番号,郵便番号,住所,動物名前,動物種,性別,生年月日,年齢,診療日,主訴症状,診断,検査,治療方針,添付ファイル,作成時刻\r\n`  //２　//２　//５ CSVの内容を指定。 ,は列の区切りを示し、\nは改行
+        csv += `${last_row_imported[0]},${last_row_imported[1]},${last_row_imported[2]},${last_row_imported[3]},${last_row_imported[4]},${last_row_imported[5]},${last_row_imported[6]},${last_row_imported[7]},${last_row_imported[8]},${last_row_imported[9]},${last_row_imported[10]},${last_row_imported[11]},${last_row_imported[12]},${last_row_imported[13]},${last_row_imported[14]},${last_row_imported[15]},${last_row_imported[16]},${last_row_imported[17]}\r\n`
+
+        // csvを保存する
+        writeFileSync(new_csv_path, "")                               //空のファイルを書き出す
+        let fd = openSync(new_csv_path, "w")                          //ファイルを書き込み専用モードで開く
+        let buf = iconv.encode(csv, "Shift_JIS")                      //書き出すデータをShift_JISに変換して、バッファとして書き出す
+        writeSync(fd, buf, 0, buf.length, (err, written, buffer) => {  //バッファをファイルに書き込む
+          if (err) {
+            throw err
+          }
+          else {
+            console.log("Wrote a csv file")
+          }
+        })
+
+        dialog.showMessageBox({
+          message: "データベースに患者フォルダが作成されました",
+          type: "info"
+        })
+
+        event.reply('import-reply', "データベースに患者フォルダが作成されました")  //rendererに返事をする。。
+
+      }
+    }
+  }
+})
+
 // 患者番号入力が終わってblurになった時のアクション
 //　データベースから患者情報を入手して、rendererに返信。
 ipcMain.on("kanjyabango", (event, arg) => {

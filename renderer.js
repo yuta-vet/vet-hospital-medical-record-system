@@ -70,6 +70,15 @@ preloaded.on("database-reply", (event, arg) => {
     databasebutton.classList.add("btn-primary") //色変更
 });
 
+// ウェブ作成データを取り込むボタンのアクション
+$("#import").click(function () {
+    preloaded.send("import", "imported")
+});
+// ウェブ作成データを取り込むボタンのアクション
+preloaded.on("import-reply", (event, arg) => {
+    document.getElementById("import").blur()
+});
+
 // リセットボタンを押されたときのアクション
 // 入力事項を消す
 $("#reset").click(function () {
@@ -335,8 +344,15 @@ $("#inputAddress01").keyup(function () {
 });
 
 
+
 // 保存ボタンが押されたときのアクション
 const content_save = document.getElementById("save"); //  保存ボタンの要素を取得
+
+const erase_comma = (inputText) => {
+    let newstring = inputText.replace(/,/g, "，")
+    newstring = newstring.replace(/;/g, "；")
+    return newstring
+}
 
 content_save.addEventListener("click", function () {
 
@@ -349,22 +365,22 @@ content_save.addEventListener("click", function () {
     }
 
     preloaded.send("save-action",　　　　//// main processに各入力項目を送る
-        [document.getElementById("kanjyabango").value,
-        document.getElementById("tanto").value,
-        document.getElementById("kainushiname").value,
-        document.getElementById("denwa").value,
-        document.getElementById("inputAddress01").value,
-        document.getElementById("inputAddress02").value,
-        document.getElementById("name").value,
-        document.getElementById("animalList").value,
-        document.getElementById("sexList").value,
-        document.getElementById("birthDay").value,
-        document.getElementById("age").value,
-        document.getElementById("shinryobi").value,
-        document.getElementById("syuso").value,
-        document.getElementById("shindan").value,
-        document.getElementById("kensa").value,
-        document.getElementById("chiryohoushin").value,
+        [erase_comma(document.getElementById("kanjyabango").value),
+        erase_comma(document.getElementById("tanto").value),
+        erase_comma(document.getElementById("kainushiname").value),
+        erase_comma(document.getElementById("denwa").value),
+        erase_comma(document.getElementById("inputAddress01").value),
+        erase_comma(document.getElementById("inputAddress02").value),
+        erase_comma(document.getElementById("name").value),
+        erase_comma(document.getElementById("animalList").value),
+        erase_comma(document.getElementById("sexList").value),
+        erase_comma(document.getElementById("birthDay").value),
+        erase_comma(document.getElementById("age").value),
+        erase_comma(document.getElementById("shinryobi").value),
+        erase_comma(document.getElementById("syuso").value),
+        erase_comma(document.getElementById("shindan").value),
+        erase_comma(document.getElementById("kensa").value),
+        erase_comma(document.getElementById("chiryohoushin").value),
             file_paths
         ]
     );
